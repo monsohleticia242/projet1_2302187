@@ -5,13 +5,14 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -46,7 +47,8 @@ fun LanceurDes() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .verticalScroll(rememberScrollState())
+            .padding(16.dp), //marge
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // 1. Titre de l'application
@@ -58,9 +60,12 @@ fun LanceurDes() {
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(bottom = 24.dp) //Espace en dessous du titre
         )
-        //Pour grouper tout le contenu et fillMaxWhidth pour prendre toute la largeur disponible.
+
+        // ========== PREMIÈRE CARD : Configuration ==========
         Card(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp)  // Espace entre les deux cards
         ) {
             Column(
                 modifier = Modifier.padding(16.dp),
@@ -103,7 +108,7 @@ fun LanceurDes() {
                             chunk.forEach { Liste ->
                                 Row(
                                     modifier = Modifier
-                                        .selectable( //Rendre chaque ligne cliquable
+                                        .selectable( //Rendre chaque row  cliquable
                                             selected = selectedDiceType == Liste,
                                             onClick = {
                                                 selectedDiceType = Liste
@@ -181,9 +186,18 @@ fun LanceurDes() {
                         fontWeight = FontWeight.Bold
                     )
                 }
+            }
+        }
 
-                Spacer(modifier = Modifier.height(24.dp)) //Espacement
 
+        // ========== DEUXIÈME CARD : Résultats ==========
+        Card(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 // 6. Zone d'affichage des résultats
                 Text(
                     text = " RÉSULTATS ",
@@ -240,8 +254,10 @@ fun LanceurDes() {
                 }
             }
         }
+
     }
 }
+
 @Preview(showBackground = true)
 @Composable
 fun LanceurDesPreview() {
