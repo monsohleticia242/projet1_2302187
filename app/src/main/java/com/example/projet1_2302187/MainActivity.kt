@@ -1,9 +1,11 @@
 package com.example.projet1_2302187
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
@@ -13,12 +15,14 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.projet1_2302187.ui.theme.Projet1_2302187Theme
+import kotlin.random.Random
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,10 +44,43 @@ fun LanceurDes() {
     var numberOfDice by remember { mutableStateOf(1) } //Stock le nombre de Dés
     var selectedDiceType by remember { mutableStateOf("d12") } //Type de Dés actuel
     var sortOption by remember { mutableStateOf("Aucun tri") }
+    var diceResults by remember { mutableStateOf(listOf<Int>()) } // Résultats dynamiques
 
-    val staticResults = listOf(3, 5, 2, 6, 1) // Liste de resultat fictive
 
-    //Organisation verticalement des composants *
+//    val configuration = LocalConfiguration.current
+//    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
+    // Fonction pour obtenir le nombre de faces
+    fun getObtenirNombreDeFace(type: String): Int {
+        return type.removePrefix("d").toInt()
+    }
+
+    fun lancerLesDes() {
+        // Validation: s'assurer qu'on a au moins 1 dé
+        if (numberOfDice < 1) {
+            return
+        }
+
+        val faces = getObtenirNombreDeFace(selectedDiceType)
+
+        // Validation: s'assurer que le nombre de faces est valide
+        if (faces < 4) {
+            return
+        }
+
+        val list = List(numberOfDice) { Random.nextInt(1, faces + 1) }
+
+        // Appliquer le tri selon l'option sélectionnée
+        diceResults = when (sortOption) {
+            "Tri croissant" -> list.sorted()
+            "Tri décroissant" -> list.sortedDescending()
+            else -> list // "Aucun tri"
+        }
+
+
+    }
+
+    //Organisation verticalement des composants
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -86,6 +123,21 @@ fun LanceurDes() {
                 )
 
                 Spacer(modifier = Modifier.height(24.dp)) //Espace les textes
+
+                //Slider
+
+                Slider(
+                    value = numberOfDice.toFloat(),
+                    onValueChange = { newValue ->
+                        numberOfDice = newValue.toInt().coerceAtLeast(1)  // Validation: minimum 1
+                        Log.d("LanceurDes", "Nombre de dés changé: $numberOfDice")
+                    },
+                    valueRange = 1f..6f,
+                    steps = 4
+                )
+
+                Spacer(modifier = Modifier.height(24.dp)) //Espace les textes
+
 
                 // 4. Configuration du nombre de faces par dé
                 Text(
@@ -134,6 +186,8 @@ fun LanceurDes() {
 
                 Spacer(modifier = Modifier.height(24.dp)) //Espacement
 
+
+
                 // 5. Option de tri des résultats
                 Text(
                     text = "Tri des résultats",
@@ -143,6 +197,7 @@ fun LanceurDes() {
                 )
 
                 val sortOptions = listOf("Aucun tri", "Tri croissant", "Tri décroissant") //Liste des 3 options demandé.
+
 
                 Column(modifier = Modifier.selectableGroup()) {
                     sortOptions.forEach { option -> //forEach créer un RadioButton pour chaque option.
@@ -176,7 +231,8 @@ fun LanceurDes() {
                 // 2. Bouton principal "Lancer les dés"
                 Button(
                     onClick = {
-                        Log.d("LanceurDes", "Bouton 'Lancer les dés' cliqué!") //Ajoute une action et la configuration actuelle
+                        lancerLesDes() // Appelle la fonction de lancement
+                        Log.d("LanceurDes", "Bouton 'Lancer les dés' cliqué!")
                         Log.d("LanceurDes", "Configuration: $numberOfDice dés de type $selectedDiceType, tri: $sortOption")
                     },
                 ) {
@@ -190,7 +246,7 @@ fun LanceurDes() {
         }
 
 
-        // ========== DEUXIÈME CARD : Résultats ==========
+
         Card(
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -207,32 +263,54 @@ fun LanceurDes() {
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
 
-                // Affichage des valeurs des dés
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    // Colonne pour les valeurs
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
+                // Affichage des dés avec images
+                if (diceResults.isEmpty()) {
+                    Text(
+                        text = "Lancez les dés!",
+                        fontSize = 18.sp,
+                        modifier = Modifier.padding(vertical = 20.dp)
+                    )
+                } else {
+                    // Grille de dés avec images
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 10.dp),
+                        horizontalArrangement = Arrangement.Center
                     ) {
-                        Text(
-                            text = "Valeurs obtenues:",
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Medium,
-                            modifier = Modifier.padding(bottom = 8.dp)
-                        )
+                        diceResults.forEach { valeur ->
+                            Box(
+                                modifier = Modifier
+                                    .size(80.dp)
+                                    .padding(4.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                // Image de fond du dé
+                                Image(
+                                    painter = painterResource(id = R.drawable.baseline_casino_24),
+                                    contentDescription = "Dé",
+                                    modifier = Modifier.fillMaxSize()
+                                )
 
-                        Text(
-                            text = staticResults.take(numberOfDice).joinToString(" "), //Prend seulement le nombre de Dés sélectionné.
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight.Bold,
-                            textAlign = TextAlign.Center,
-                            color = MaterialTheme.colorScheme.primary
-                        )
+                                // Nombre superposé
+                                Text(
+                                    text = valeur.toString(),
+                                    fontSize = 32.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                                )
+                            }
+                        }
                     }
+                }
 
-                    // Colonne pour la somme
+                // Affichage de la somme
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp),
+                    horizontalArrangement = Arrangement.Center
+                ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -244,7 +322,7 @@ fun LanceurDes() {
                         )
 
                         Text(
-                            text = "${staticResults.take(numberOfDice).sum()}",
+                            text = if (diceResults.isEmpty()) "0" else "${diceResults.sum()}",
                             fontSize = 32.sp,
                             fontWeight = FontWeight.Bold,
                             textAlign = TextAlign.Center,
