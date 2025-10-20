@@ -15,6 +15,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -44,7 +46,9 @@ fun LanceurDes() {
     var numberOfDice by remember { mutableStateOf(1) } //Stock le nombre de Dés
     var selectedDiceType by remember { mutableStateOf("d12") } //Type de Dés actuel
     var sortOption by remember { mutableStateOf("Aucun tri") }
-    var diceResults by remember { mutableStateOf(listOf<Int>()) } // Résultats dynamiques
+    var diceResults by remember { mutableStateOf(listOf<Int>()) } // Résultats dynamiques  //remenbersavable
+
+
 
 
 //    val configuration = LocalConfiguration.current
@@ -52,7 +56,20 @@ fun LanceurDes() {
 
     // Fonction pour obtenir le nombre de faces
     fun getObtenirNombreDeFace(type: String): Int {
-        return type.removePrefix("d").toInt()
+        return type.removePrefix("🎲").toInt()
+    }
+
+    // Fonction pour obtenir l'image selon le type de dé
+    fun getDiceImageResource(diceType: String): Int {
+        return when(diceType) {
+            "🎲4" -> R.drawable.d4
+            "🎲6" -> R.drawable.d6
+            "🎲8" -> R.drawable.d8
+            "🎲10" -> R.drawable.d10
+            "🎲12" -> R.drawable.d12
+            "🎲20" -> R.drawable.d20
+            else -> R.drawable.baseline_casino_24 // Image par défaut
+        }
     }
 
     fun lancerLesDes() {
@@ -90,7 +107,7 @@ fun LanceurDes() {
     ) {
         // 1. Titre de l'application
         Text(
-            text = " Lanceur de Dés ",
+            text = " Lanceur de 🎲 ",
             fontSize = 24.sp, //Taille de police
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary,
@@ -110,14 +127,14 @@ fun LanceurDes() {
             ) {
                 // 3. Configuration du nombre de dés
                 Text(
-                    text = "Nombre de dés",
+                    text = "Nombre de 🎲",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Medium,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
 
                 Text(
-                    text = "Dés sélectionnés: $numberOfDice",
+                    text = "🎲 sélectionnés: $numberOfDice",
                     fontSize = 14.sp,
                     modifier = Modifier.padding(bottom = 4.dp)
                 )
@@ -140,6 +157,8 @@ fun LanceurDes() {
 
 
                 // 4. Configuration du nombre de faces par dé
+
+
                 Text(
                     text = "Type de dé",
                     fontSize = 18.sp,
@@ -147,7 +166,8 @@ fun LanceurDes() {
                     modifier = Modifier.padding(bottom = 12.dp)
                 )
 
-                val maListe = listOf("d4", "d6", "d8", "d10", "d12", "d20") //Contient 6 types de Dés
+                val maListe =
+                    listOf("🎲4", "🎲6", "🎲8", "🎲10", "🎲12", "🎲20") //Contient 6 types de Dés
 
                 Row(
                     modifier = Modifier
@@ -164,7 +184,10 @@ fun LanceurDes() {
                                             selected = selectedDiceType == Liste,
                                             onClick = {
                                                 selectedDiceType = Liste
-                                                Log.i("DiceLauncher", "Type de dé sélectionné: $Liste") // Message de débug
+                                                Log.i(
+                                                    "DiceLauncher",
+                                                    "Type de dé sélectionné: $Liste"
+                                                ) // Message de débug
                                             }
                                         )
                                         .padding(4.dp),
@@ -187,7 +210,16 @@ fun LanceurDes() {
                 Spacer(modifier = Modifier.height(24.dp)) //Espacement
 
 
+            }
+        }
 
+
+        Spacer(modifier = Modifier.height(24.dp)) //Espacement
+
+        Card(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Column(modifier = Modifier.padding(16.dp)) {
                 // 5. Option de tri des résultats
                 Text(
                     text = "Tri des résultats",
@@ -196,7 +228,11 @@ fun LanceurDes() {
                     modifier = Modifier.padding(bottom = 12.dp)
                 )
 
-                val sortOptions = listOf("Aucun tri", "Tri croissant", "Tri décroissant") //Liste des 3 options demandé.
+                val sortOptions = listOf(
+                    "Aucun tri",
+                    "Tri croissant",
+                    "Tri décroissant"
+                ) //Liste des 3 options demandé.
 
 
                 Column(modifier = Modifier.selectableGroup()) {
@@ -208,7 +244,10 @@ fun LanceurDes() {
                                     selected = sortOption == option,
                                     onClick = {
                                         sortOption = option
-                                        Log.i("DiceLauncher", "Option de tri sélectionnée: $option") // Message
+                                        Log.i(
+                                            "DiceLauncher",
+                                            "Option de tri sélectionnée: $option"
+                                        ) // Message
                                     }
                                 )
                                 .padding(vertical = 4.dp),
@@ -226,6 +265,7 @@ fun LanceurDes() {
                     }
                 }
 
+
                 Spacer(modifier = Modifier.height(24.dp)) //Espacement
 
                 // 2. Bouton principal "Lancer les dés"
@@ -233,11 +273,14 @@ fun LanceurDes() {
                     onClick = {
                         lancerLesDes() // Appelle la fonction de lancement
                         Log.d("LanceurDes", "Bouton 'Lancer les dés' cliqué!")
-                        Log.d("LanceurDes", "Configuration: $numberOfDice dés de type $selectedDiceType, tri: $sortOption")
+                        Log.d(
+                            "LanceurDes",
+                            "Configuration: $numberOfDice dés de type $selectedDiceType, tri: $sortOption"
+                        )
                     },
                 ) {
                     Text(
-                        text = " LANCER LES DÉS ",
+                        text = " LANCER LES 🎲🎲🎲 ",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -245,7 +288,7 @@ fun LanceurDes() {
             }
         }
 
-
+        Spacer(modifier = Modifier.height(24.dp)) //Espacement
 
         Card(
             modifier = Modifier.fillMaxWidth()
@@ -266,7 +309,7 @@ fun LanceurDes() {
                 // Affichage des dés avec images
                 if (diceResults.isEmpty()) {
                     Text(
-                        text = "Lancez les dés!",
+                        text = "Lancez les 🎲🎲🎲!",
                         fontSize = 18.sp,
                         modifier = Modifier.padding(vertical = 20.dp)
                     )
@@ -281,23 +324,23 @@ fun LanceurDes() {
                         diceResults.forEach { valeur ->
                             Box(
                                 modifier = Modifier
-                                    .size(80.dp)
+                                    .size(50.dp)
                                     .padding(4.dp),
                                 contentAlignment = Alignment.Center
                             ) {
-                                // Image de fond du dé
+                                // Image de fond du dé (une image différente selon le type)
                                 Image(
-                                    painter = painterResource(id = R.drawable.baseline_casino_24),
-                                    contentDescription = "Dé",
+                                    painter = painterResource(id = getDiceImageResource(selectedDiceType)),
+                                    contentDescription = "Dé $selectedDiceType",
                                     modifier = Modifier.fillMaxSize()
                                 )
 
                                 // Nombre superposé
                                 Text(
                                     text = valeur.toString(),
-                                    fontSize = 32.sp,
+                                    fontSize = 25.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                                    color = Color.Magenta
                                 )
                             }
                         }
