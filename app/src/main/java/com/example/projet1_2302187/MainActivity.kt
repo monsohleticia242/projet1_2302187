@@ -1,6 +1,5 @@
 package com.example.projet1_2302187
 
-import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -13,10 +12,10 @@ import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -43,10 +42,10 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun LanceurDes() {
-    var numberOfDice by remember { mutableStateOf(1) } //Stock le nombre de Dés
-    var selectedDiceType by remember { mutableStateOf("d12") } //Type de Dés actuel
-    var sortOption by remember { mutableStateOf("Aucun tri") }
-    var diceResults by remember { mutableStateOf(listOf<Int>()) } // Résultats dynamiques  //remenbersavable
+    var numberOfDice by rememberSaveable { mutableStateOf(1) } //Stock le nombre de Dés
+    var selectedDiceType by rememberSaveable{ mutableStateOf("d12") } //Type de Dés actuel
+    var sortOption by rememberSaveable { mutableStateOf("Aucun tri") }
+    var diceResults by rememberSaveable { mutableStateOf(listOf<Int>()) } // Résultats dynamiques  //remenbersavable
 
 
 
@@ -60,7 +59,7 @@ fun LanceurDes() {
     }
 
     // Fonction pour obtenir l'image selon le type de dé
-    fun getDiceImageResource(diceType: String): Int {
+    fun getObtenirImage(diceType: String): Int {
         return when(diceType) {
             "🎲4" -> R.drawable.d4
             "🎲6" -> R.drawable.d6
@@ -330,7 +329,7 @@ fun LanceurDes() {
                             ) {
                                 // Image de fond du dé (une image différente selon le type)
                                 Image(
-                                    painter = painterResource(id = getDiceImageResource(selectedDiceType)),
+                                    painter = painterResource(id = getObtenirImage(selectedDiceType)),
                                     contentDescription = "Dé $selectedDiceType",
                                     modifier = Modifier.fillMaxSize()
                                 )
