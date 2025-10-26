@@ -241,7 +241,7 @@ fun LanceurDes() {
                                         Log.i(
                                             "DiceLauncher",
                                             "Option de tri sélectionnée: $option"
-                                        ) // Message
+                                        )
                                     }
                                 )
                                 .padding(vertical = 4.dp),
