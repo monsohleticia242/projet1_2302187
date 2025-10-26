@@ -43,13 +43,9 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun LanceurDes() {
     var numberOfDice by rememberSaveable { mutableStateOf(1) } //Stock le nombre de Dés
-    var selectedDiceType by rememberSaveable{ mutableStateOf("d12") } //Type de Dés actuel
+    var selectedDiceType by rememberSaveable { mutableStateOf("d12") } //Type de Dés actuel
     var sortOption by rememberSaveable { mutableStateOf("Aucun tri") }
-    var diceResults by rememberSaveable { mutableStateOf(listOf<Int>()) } // Résultats dynamiques  //remenbersavable
-
-
-
-
+    var diceResults by rememberSaveable { mutableStateOf(listOf<Int>()) }   //remembersaveable
 
 
     // Fonction pour obtenir le nombre de faces
@@ -59,7 +55,7 @@ fun LanceurDes() {
 
     // Fonction pour obtenir l'image selon le type de dé
     fun getObtenirImage(diceType: String): Int {
-        return when(diceType) {
+        return when (diceType) {
             "🎲4" -> R.drawable.d4
             "🎲6" -> R.drawable.d6
             "🎲8" -> R.drawable.d8
@@ -185,7 +181,7 @@ fun LanceurDes() {
                                                 Log.i(
                                                     "DiceLauncher",
                                                     "Type de dé sélectionné: $Liste"
-                                                ) // Message de débug
+                                                )
                                             }
                                         )
                                         .padding(4.dp),
