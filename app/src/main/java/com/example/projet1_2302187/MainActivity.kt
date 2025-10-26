@@ -50,8 +50,7 @@ fun LanceurDes() {
 
 
 
-//    val configuration = LocalConfiguration.current
-//    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
 
     // Fonction pour obtenir le nombre de faces
     fun getObtenirNombreDeFace(type: String): Int {
